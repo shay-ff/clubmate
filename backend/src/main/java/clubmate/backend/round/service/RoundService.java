@@ -92,6 +92,29 @@ public class RoundService {
     }
 
     /**
+     * Generate pairings for a round given a round number and list of players.
+     *
+     * @param roundNumber Round number (for logging/identification)
+     * @param players     List of players to pair
+     * @return            List of matches representing the pairings
+     */
+    public List<Match> generateRoundPairings(Integer roundNumber, List<Player> players) {
+        log.debug("Generating pairings for round {} with {} players", roundNumber, players.size());
+        
+        if (!pairingService.canGeneratePairings(players.size())) {
+            throw new IllegalStateException(
+                String.format(
+                    "Cannot generate pairings for round %d with %d players. Minimum required: 2",
+                    roundNumber, players.size()
+                )
+            );
+        }
+
+        // Generate and return matches (without a roundId, that's handled by caller)
+        return pairingService.generateRoundPairings(UUID.randomUUID(), players);
+    }
+
+    /**
      * Get the current pairing strategy being used.
      *
      * @return Strategy name
